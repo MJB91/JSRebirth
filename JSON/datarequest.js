@@ -3,17 +3,39 @@ button.addEventListener("click", getdata);    //associer requête au bouton
 
 function getdata() {
   var request = new XMLHttpRequest(); //création de la requête
-  request.open("GET", "data.json", true); //spécification de la requête, l'adresse et si la requête est asynchrone (non bloquante)
-  request.send();
   request.onreadystatechange = function (){
-    if (this.readyState == 4 && this.status == 200) {
-      console.log(request.responseText);
+    if (request.readyState == 4 && request.status == 200) {
+      handleRequest(request);
     }
   }
-};
-function handleRequest(request) {
-  console.log(request);
+  request.open("GET", "data.json", true); //spécification de la requête, l'adresse et si la requête est asynchrone (non bloquante)
+  request.send();
 }
+
+function handleRequest(request) {
+  console.log(request.responseText);
+  var obj = JSON.parse(request.responseText);
+  for (var key in obj) {
+    var table = obj[key];
+    // Create HTML for the first key
+    var element = document.createElement("h2");
+    element.innerText = key; //add text to element
+    document.body.appendChild(element);
+    // Create list for each key
+    var list = document.createElement("ul");
+    for (var i = 0; i < table.length ; i++) {
+      var person = table[i]; // each student / teacher / admin
+      var listItem = document.createElement("li");
+      for (var k in person) {
+        listItem.innerText += k + " : " + person[k] + " ";
+      }
+      list.appendChild(listItem);
+    }
+    document.body.appendChild(list);
+  }
+}
+
+
 
 
 //CORRECTION :
@@ -44,7 +66,11 @@ function handleRequest(request) {
 //          request.send(); //sending request
 //          }
 
-//handle request 2
-//        function handleRequest(request) {
-//        console.log(request);
-//        }
+//handle request 2 (version finale de la fonction editée hors-commentaires)
+//          function handleRequest(request) {
+//          console.log(request.responseText);
+//          var obj = JSON.parse(request.responseText);
+//          for (var prop in obj) {
+//              console.log(prop,obj[prop]);
+//            }
+//          };
